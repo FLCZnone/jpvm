@@ -58,6 +58,7 @@ public class PyModuleMain extends PyModuleObject{
                 int data;
                 char temp2;
                 try {
+
                     FileInputStream fis = new FileInputStream(pyOpen.path);
                     InputStreamReader isr = new InputStreamReader(fis, "UTF-8");
                     BufferedReader bufferedReader=new BufferedReader(isr);
