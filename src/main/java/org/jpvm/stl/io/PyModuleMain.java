@@ -215,22 +215,24 @@ public class PyModuleMain extends PyModuleObject{
             PyLongObject temp= (PyLongObject) args.get(1);
             int size= (int) temp.getData();
             try {
+                String s;
                 for(int i=0;i<size;i++){
-                    PyString pyString = new PyString();
-                    pyString.string = pyFileReader.bufferedReader.readLine();
-                    if(pyString.string==null){break;}
-                    pyListObject.add(pyString);
+                    if((s=pyFileReader.bufferedReader.readLine())!=null) {
+                        PyUnicodeObject pyUnicodeObject = new PyUnicodeObject(s);
+                        pyListObject.add(pyUnicodeObject);
+                    }else{break;}
                 }
             } catch (IOException e) {
                 e.getStackTrace();
             }
         }else {//读取所有行
             try {
+                String s;
                 do {
-                    PyString pyString = new PyString();
-                    pyString.string = pyFileReader.bufferedReader.readLine();
-                    if(pyString.string==null){break;}
-                    pyListObject.add(pyString);
+                    if((s=pyFileReader.bufferedReader.readLine())!=null) {
+                        PyUnicodeObject pyUnicodeObject = new PyUnicodeObject(s);
+                        pyListObject.add(pyUnicodeObject);
+                    }else{break;}
                 }
                 while(true);
             } catch (IOException e) {
