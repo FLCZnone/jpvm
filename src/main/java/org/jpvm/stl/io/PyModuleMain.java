@@ -64,10 +64,10 @@ public class PyModuleMain extends PyModuleObject{
                 break;
             case "r+"://用于读写，文件指针在开头
                 try {
-                    RandomAccessFile randomAccessFile = new RandomAccessFile(pyOpen.path, "rw");
-                    randomAccessFile.seek(0);
-                    pyOpen.pyFileReader=new PyFileReader(randomAccessFile.getFD());
-                    pyOpen.pyFileWriter=new PyFileWriter(randomAccessFile.getFD());
+                    pyOpen.randomAccessFile=new RandomAccessFile(pyOpen.path, "rw");
+                    pyOpen.randomAccessFile.seek(0);
+                    pyOpen.pyFileReader=new PyFileReader(pyOpen.randomAccessFile.getFD());
+                    pyOpen.pyFileWriter=new PyFileWriter(pyOpen.randomAccessFile.getFD());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -152,7 +152,7 @@ public class PyModuleMain extends PyModuleObject{
         System.out.println("closed()<<<<<");
         PyTupleObject pyio=(PyTupleObject)args.get(0);
         PyOpen pyOpen= (PyOpen) pyio.get(0);
-        PyBoolObject isClosed = PyBoolObject.getInstance();
+        PyBoolObject isClosed;
         if(Objects.equals(pyOpen.path, "")) {
             isClosed=PyBoolObject.getTrue();
         }else{
@@ -357,15 +357,57 @@ public class PyModuleMain extends PyModuleObject{
         System.out.println("readlines()>>>>>");
         return pyListObject;
     }
-    @PyClassMethod//废弃
-    public PyObject read(PyTupleObject args, PyDictObject kwArgs) throws PyException {
-        System.out.println("read()<<<<<<<<<<<<<<");
+    @PyClassMethod//new
+    public PyObject seek(PyTupleObject args, PyDictObject kwArgs) throws PyException {
+        System.out.println("seek()<<<<<<<<<<<<<<");
         PyTupleObject pyio= (PyTupleObject) args.get(0);
-        System.out.println("read()>>>>>>>>>>>>>>");
+        System.out.println("seek()>>>>>>>>>>>>>>");
         return pyio;
     }
-
-
+    @PyClassMethod//new
+    public PyObject seekable(PyTupleObject args, PyDictObject kwArgs) throws PyException {
+        System.out.println("seekable()<<<<<<<<<<<<<<");
+        PyTupleObject pyio= (PyTupleObject) args.get(0);
+        PyOpen pyOpen= (PyOpen) pyio.get(0);
+        PyBoolObject isseekable;
+        switch(pyOpen.mode){
+            case "r+":
+            case "w+":
+            case "a+":
+            case "rb+":
+            case "wb+":
+            case "ab+":
+                isseekable=PyBoolObject.getTrue();
+                break;
+            default:
+                isseekable=PyBoolObject.getFalse();
+                break;
+        }
+        System.out.println("isseekable="+isseekable.toString());
+        System.out.println("seekable()>>>>>>>>>>>>>>");
+        return isseekable;
+    }
+    @PyClassMethod//new
+    public PyObject tell(PyTupleObject args, PyDictObject kwArgs) throws PyException {
+        System.out.println("tell()<<<<<<<<<<<<<<");
+        PyTupleObject pyio= (PyTupleObject) args.get(0);
+        PyOpen pyOpen= (PyOpen) pyio.get(0);
+        try {
+            long position = pyOpen.randomAccessFile.getFilePointer();
+            System.out.println("文件指针的当前位置为" + position);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("tell()>>>>>>>>>>>>>>");
+        return pyio;
+    }
+    @PyClassMethod//new
+    public PyObject truncate(PyTupleObject args, PyDictObject kwArgs) throws PyException {
+        System.out.println("truncate()<<<<<<<<<<<<<<");
+        PyTupleObject pyio= (PyTupleObject) args.get(0);
+        System.out.println("truncate()>>>>>>>>>>>>>>");
+        return pyio;
+    }
     @PyClassMethod//没有该函数
     public PyObject write(PyTupleObject args, PyDictObject kwArgs) throws PyException {
         System.out.println("write()<<<<<");
