@@ -14,7 +14,7 @@ public class PyFileReader extends PyObject{
     public InputStreamReader inputStreamReader;
     public PyFileReader(){}
 
-    public PyFileReader(String path) throws PyException {
+    public PyFileReader(String path) throws PyException {//非二进制
         try {
             fileReader=new FileReader(path);
             bufferedReader=new BufferedReader(fileReader);
@@ -23,11 +23,11 @@ public class PyFileReader extends PyObject{
             //PyErrorUtils.pyErrorFormat(PyErrorUtils.FileNotFoundError,"PyFileReader: File Not Found Error");
         }
     }
-    public PyFileReader(FileDescriptor fileDescriptor) throws PyException {
+    public PyFileReader(FileDescriptor fileDescriptor) throws PyException {//非二进制
         fileReader=new FileReader(fileDescriptor);
         bufferedReader=new BufferedReader(fileReader);
     }
-    public PyFileReader(FileDescriptor fileDescriptor,String mod) throws PyException {
+    public PyFileReader(FileDescriptor fileDescriptor,String mod) throws PyException {//二进制
         try {
             fileInputStream = new FileInputStream(fileDescriptor);
             inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
@@ -36,7 +36,7 @@ public class PyFileReader extends PyObject{
             throw new RuntimeException(e);
         }
     }
-    public PyFileReader(String path,String mod) throws PyException{
+    public PyFileReader(String path,String mod) throws PyException{//二进制
         try {
             fileInputStream = new FileInputStream(path);
             inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
